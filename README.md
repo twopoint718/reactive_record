@@ -1,29 +1,24 @@
-# ReactiveRecord
+# reactive_record
 
-TODO: Write a gem description
+Generates ActiveRecord models to fit a pre-existing Postgres database.
+Now you can use Rails with the db schema you always wanted. It's
+**your** convention over configuration.
 
-## Installation
+## Why?
 
-Add this line to your application's Gemfile:
+1. Your app is specific to Postgres and proud of it. You use the mature
+   declarative data validation that only a real database can provide.
+1. You have inherited a database or are more comfortable creating one
+   yourself.
+1. You're a grown-ass DBA who doesn't want to speak ORM baby-talk.
 
-    gem 'reactive_record'
+## Features
 
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install reactive_record
+* Fully automatic. It just works.
+* Creates a model for every table.
+* Creates a comprehensive initial migration.
+* Declares key-, uniqueness-, and presence-constraints.
+* Creates associations.
+* Adds custom validation methods for `CHECK` constraints.
 
 ## Usage
-
-TODO: Write usage instructions here
-
-## Contributing
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request

@@ -8,9 +8,9 @@ Gem::Specification.new do |gem|
   gem.version       = ReactiveRecord::VERSION
   gem.authors       = ["Joe Nelson", "Chris Wilson"]
   gem.email         = ["cred+github@begriffs.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.description   = %q{Generate ActiveRecord models from a pre-existing Postgres db}
+  gem.summary       = %q{Use the schema you always wanted.}
+  gem.homepage      = "https://github.com/begriffs/reactive_record"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
