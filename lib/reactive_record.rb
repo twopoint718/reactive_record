@@ -50,6 +50,10 @@ module ReactiveRecord
     cols_with_contype(db, table_name, 'p').first
   end
 
+  def unique_columns db, table_name
+    cols_with_contype db, table_name, 'u'
+  end
+
   def non_nullable_columns db, table_name
     result = db.exec """
       SELECT column_name
@@ -59,11 +63,6 @@ module ReactiveRecord
     """, [table_name, 'NO']
     result.map { |r| r['column_name'] }
   end
-
-  def unique_columns db, table_name
-    cols_with_contype db, table_name, 'u'
-  end
-
 
   def constraint_to_validation constraint
   end
