@@ -9,14 +9,19 @@ module ReactiveRecord
     res << "class #{table_name.classify.pluralize} < ActiveRecord::Base"
     res << "  set_table_name '#{table_name}'"
     res << "  set_primary_key :#{primary_key db, table_name}"
-
-    present_cols = non_nullable_columns(db, table_name).map { |c| ":#{c}" }
-    unless present_cols.empty?
-      res << "  validate #{present_cols.join ', '}, presence: true"
-    end
+    res << ''
+    res += validate_definition non_nullable_columns(db, table_name), 'presence'
+    res += validate_definition unique_columns(db, table_name), 'uniqueness'
     res << "end"
 
     res.join "\n"
+  end
+
+  def validate_definition cols, type
+    res = []
+    return res if cols.empty?
+    symbols = cols.map { |c| ":#{c}" }
+    ["  validate #{symbols.join ', '}, #{type}: true"]
   end
 
   def table_names db
@@ -30,15 +35,19 @@ module ReactiveRecord
   def constraints db, table_name
   end
 
-  def primary_key db, table_name
+  def cols_with_contype db, table_name, type
     result = db.exec """
-      SELECT column_name AS primary_key
+      SELECT column_name
       FROM pg_constraint, information_schema.columns
       WHERE table_name = $1
-      AND contype = 'p'
+      AND contype = $2
       AND ordinal_position = any(conkey);
-    """, [table_name]
-    result.first["primary_key"]
+    """, [table_name, type]
+    result.map { |c| c["column_name"] }
+  end
+
+  def primary_key db, table_name
+    cols_with_contype(db, table_name, 'p').first
   end
 
   def non_nullable_columns db, table_name
@@ -46,10 +55,15 @@ module ReactiveRecord
       SELECT column_name
       FROM information_schema.columns
       WHERE table_name = $1
-      AND Is_nullable = $2
+      AND is_nullable = $2
     """, [table_name, 'NO']
     result.map { |r| r['column_name'] }
   end
+
+  def unique_columns db, table_name
+    cols_with_contype db, table_name, 'u'
+  end
+
 
   def constraint_to_validation constraint
   end
