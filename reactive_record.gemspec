@@ -19,4 +19,8 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "pg"
   gem.add_dependency "activesupport"
+
+  gem.add_development_dependency 'rspec'
+  gem.add_development_dependency 'rexical'
+  gem.add_development_dependency 'racc'
 end
