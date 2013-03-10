@@ -1,4 +1,4 @@
-require "reactive_record/version"
+require_relative "./reactive_record/version"
 
 require 'pg'
 require 'active_support/inflector'
@@ -32,7 +32,20 @@ module ReactiveRecord
     results.map { |r| r['table_name'] }
   end
 
-  def constraints db, table_name
+  def constraints db
+    result = db.exec """
+      SELECT n.nspname || '.' || c.relname AS table_name,
+             con.conname AS constraint_name,
+             pg_get_constraintdef( con.oid, false) AS constraint_src
+      FROM pg_constraint con
+        JOIN pg_namespace n on (n.oid = con.connamespace)
+        JOIN pg_class c on (c.oid = con.conrelid)
+      WHERE con.conrelid != 0;
+    """
+    result
+      .map{|c| [c['table_name'], c['constraint_name'], c['constraint_src']]}
+      .sort
+      .group_by{|item| item[0]} # table name
   end
 
   def cols_with_contype db, table_name, type
