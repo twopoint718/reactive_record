@@ -64,16 +64,18 @@ rule
   type_signature  : TYPE IDENT { result = val[1].to_sym }
                   ;
 
-  foreign_key     : FOREIGN_KEY column_spec REFERENCES table_spec
-                  | FOREIGN_KEY column_spec REFERENCES table_spec action_spec
+  foreign_key     : FOREIGN_KEY column_spec REFERENCES table_spec             { result = [:foreign_key, val[1], [:references, val[3]]] }
+                  | FOREIGN_KEY column_spec REFERENCES table_spec action_spec { result = [:foreign_key, val[1], [:references, val[3]], val[4]]  }
                   ;
 
-  column_spec     : LPAREN IDENT RPAREN ;
+  column_spec     : LPAREN IDENT RPAREN { result = [:column, val[1]] }
+                  ;
 
-  table_spec      : IDENT LPAREN IDENT RPAREN ;
+  table_spec      : IDENT LPAREN IDENT RPAREN { result = [:table, val[0], [:column, val[2]]] }
+                  ;
 
-  action_spec     : ON DELETE RESTRICT
-                  | ON DELETE CASCADE
+  action_spec     : ON DELETE RESTRICT { result = [:on, :delete, :restrict] }
+                  | ON DELETE CASCADE  { result = [:on, :delete, :cascade] }
                   ;
 end
 
