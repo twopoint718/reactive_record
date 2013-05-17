@@ -23,4 +23,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rspec'
   gem.add_development_dependency 'rexical'
   gem.add_development_dependency 'racc'
+  gem.add_development_dependency 'pry'
 end

@@ -1,4 +1,9 @@
 class ConstraintParser::Parser
+prechigh
+  left PLUS MATCH_OP
+  left GTEQ LTEQ NEQ EQ GT LT
+preclow
+
 token CASCADE
       CHECK
       COMMA
@@ -27,35 +32,49 @@ token CASCADE
       UNIQUE
 
 rule
-  constraint      : unique_column
-                  | check_statement
+  constraint      : unique_column   { val[0] }
+                  | check_statement { val[0] }
+                  | foreign_key     { val[0] }
                   ;
 
-  unique_column   : UNIQUE LPAREN IDENT RPAREN
+  unique_column   : UNIQUE LPAREN IDENT RPAREN { result = [:unique, [:ident, val[2]]] }
                   ;
 
-  check_statement : CHECK expr
+  check_statement : CHECK expr  { result = [:check, val[1]] }
 
   expr            : # empty expression
-                  | LPAREN expr RPAREN
-                  | operand operator operand
+                  | LPAREN expr RPAREN  { result = val[1] }
+                  | expr type_signature { result = [:type, val[1], val[0]] }
+                  | expr operator expr  { result = [val[1], val[0], val[2]] }
+                  | IDENT               { result = [:ident, val[0]] }
+                  | STRLIT              { result = eval(val[0]) }
+                  | INT                 { result = val[0].to_i }
                   ;
 
-  operator        : GTEQ | LTEQ | NEQ | EQ | GT | LT | PLUS | MATCH_OP ;
-
-  operand         : untyped_operand
-                  | typed_operand
+  operator        : GTEQ     { result = :gteq  }
+                  | LTEQ     { result = :lteq  }
+                  | NEQ      { result = :neq   }
+                  | EQ       { result = :eq    }
+                  | GT       { result = :gt    }
+                  | LT       { result = :lt    }
+                  | PLUS     { result = :plus  }
+                  | MATCH_OP { result = :match }
                   ;
 
-  untyped_operand : LPAREN operand RPAREN
-                  | IDENT
-                  | STRLIT
-                  | INT
+  type_signature  : TYPE IDENT { result = val[1].to_sym }
                   ;
 
-  typed_operand   : operand type_signature ;
+  foreign_key     : FOREIGN_KEY column_spec REFERENCES table_spec
+                  | FOREIGN_KEY column_spec REFERENCES table_spec action_spec
+                  ;
 
-  type_signature  : TYPE IDENT ;
+  column_spec     : LPAREN IDENT RPAREN ;
+
+  table_spec      : IDENT LPAREN IDENT RPAREN ;
+
+  action_spec     : ON DELETE RESTRICT
+                  | ON DELETE CASCADE
+                  ;
 end
 
 ---- inner
