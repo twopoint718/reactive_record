@@ -46,6 +46,9 @@ describe ConstraintParser::Parser do
 
   it "FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE RESTRICT" do
     @parser = par.new(lex.new StringIO.new "FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE RESTRICT")
-    @parser.parse.should be_true
+    @parser.parse.should == [:foreign_key,
+                              [:column, 'employee_id'],
+                              [:references, [:table, 'employees', [:column, 'employee_id']]],
+                              [:on, :delete, :restrict]]
   end
 end
