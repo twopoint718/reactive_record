@@ -32,23 +32,23 @@ token CASCADE
       UNIQUE
 
 rule
-  constraint      : unique_column   { val[0] }
-                  | check_statement { val[0] }
-                  | foreign_key     { val[0] }
+  constraint      : unique_column   { result = val[0] }
+                  | check_statement { result = val[0] }
+                  | foreign_key     { result = val[0] }
                   ;
 
-  unique_column   : UNIQUE LPAREN IDENT RPAREN { result = [:unique, [:ident, val[2]]] }
+  unique_column   : UNIQUE LPAREN IDENT RPAREN { result = UniqueNode.new(IdentNode.new(val[2])) }
                   ;
 
-  check_statement : CHECK expr  { result = [:check, val[1]] }
+  check_statement : CHECK expr  { result = CheckNode.new(val[1]) }
 
-  expr            : # empty expression
+  expr            :                     { result = EmptyExprNode.new }
                   | LPAREN expr RPAREN  { result = val[1] }
-                  | expr type_signature { result = [:type, val[1], val[0]] }
-                  | expr operator expr  { result = [val[1], val[0], val[2]] }
-                  | IDENT               { result = [:ident, val[0]] }
-                  | STRLIT              { result = eval(val[0]) }
-                  | INT                 { result = val[0].to_i }
+                  | expr type_signature { result = TypedExprNode.new(val[0], val[1]) }
+                  | expr operator expr  { result = OperatorNode.new(val[1], val[0], val[2]) }
+                  | IDENT               { result = IdentNode.new(val[0]) }
+                  | STRLIT              { result = StrNode.new(val[0]) }
+                  | INT                 { result = IntNode.new(val[0]) }
                   ;
 
   operator        : GTEQ     { result = :gteq  }
@@ -61,27 +61,28 @@ rule
                   | MATCH_OP { result = :match }
                   ;
 
-  type_signature  : TYPE IDENT { result = val[1].to_sym }
+  type_signature  : TYPE IDENT { result = IdentNode.new(val[1]) }
                   ;
 
-  foreign_key     : FOREIGN_KEY column_spec REFERENCES table_spec             { result = [:foreign_key, val[1], [:references, val[3]]] }
-                  | FOREIGN_KEY column_spec REFERENCES table_spec action_spec { result = [:foreign_key, val[1], [:references, val[3]], val[4]]  }
+  foreign_key     : FOREIGN_KEY column_spec REFERENCES table_spec             { result = ForeignKeyNode.new(val[1], val[3]) }
+                  | FOREIGN_KEY column_spec REFERENCES table_spec action_spec { result = ForeignKeyNode.new(val[1], val[3], val[4]) }
                   ;
 
-  column_spec     : LPAREN IDENT RPAREN { result = [:column, val[1]] }
+  column_spec     : LPAREN IDENT RPAREN { result = IdentNode.new(val[1]) }
                   ;
 
-  table_spec      : IDENT LPAREN IDENT RPAREN { result = [:table, val[0], [:column, val[2]]] }
+  table_spec      : IDENT LPAREN IDENT RPAREN { result = TableNode.new(IdentNode.new(val[0]), IdentNode.new(val[1])) }
                   ;
 
-  action_spec     : ON DELETE RESTRICT { result = [:on, :delete, :restrict] }
-                  | ON DELETE CASCADE  { result = [:on, :delete, :cascade] }
+  action_spec     : ON DELETE RESTRICT { result = ActionNode.new(:delete, :restrict) }
+                  | ON DELETE CASCADE  { result = ActionNode.new(:delete, :cascade) }
                   ;
 end
 
 ---- inner
 
   require 'lexer'
+  require 'code_generator'
 
   def initialize tokenizer, handler = nil
     @tokenizer = tokenizer
