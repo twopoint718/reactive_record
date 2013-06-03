@@ -9,46 +9,32 @@ describe ConstraintParser::Parser do
 
   it 'parses an empty check' do
     @parser = par.new(lex.new StringIO.new 'CHECK ()')
-    @parser.parse.should == [:check, nil]
+    @parser.parse.gen.should == 'validate { true }'
   end
 
   it 'parses a simple expression' do
     @parser = par.new(lex.new StringIO.new "CHECK (((email)::text ~~ '%@bendyworks.com'::text))")
-    @parser.parse.should == [:check,
-                              [:match,
-                                [:type, :text, [:ident, 'email']],
-                                [:type, :text, '%@bendyworks.com']]]
+    @parser.parse.gen.should == "validate { errors.add(:email, \"Expected email to match '%@bendyworks.com'\") unless email =~ /.*@bendyworks.com/ }"
   end
 
   it "UNIQUE (email)" do
     @parser = par.new(lex.new StringIO.new 'UNIQUE (email)')
-    @parser.parse.should == [:unique,
-                              [:ident, 'email']]
+    @parser.parse.gen.should == "validates :email, uniqueness: true"
   end
 
   it "CHECK ((start_date <= ('now'::text)::date))" do
     @parser = par.new(lex.new StringIO.new "CHECK ((start_date <= ('now'::text)::date))")
-    @parser.parse.should == [:check,
-                              [:lteq,
-                                [:ident, 'start_date'],
-                                [:type, :date, [:type, :text, 'now']]]]
+    @parser.parse.gen.should == "validate { errors.add(:start_date, \"Expected start_date to be less than or equal to 'Time.now.to_date'\") unless start_date <= Time.now.to_date }"
   end
 
   it "CHECK ((start_date <= (('now'::text)::date + 365)))" do
     @parser = par.new(lex.new StringIO.new "CHECK ((start_date <= (('now'::text)::date + 365)))")
-    @parser.parse.should == [:check,
-                              [:lteq,
-                                [:ident, 'start_date'],
-                                [:plus,
-                                  [:type, :date, [:type, :text, 'now']],
-                                  365]]]
+    @parser.parse.gen.should == "validate { errors.add(:start_date, \"Expected start_date to be less than or equal to 'Time.now.to_date plus 365'\") unless start_date <= Time.now.to_date + 365 }"
   end
 
   it "FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE RESTRICT" do
     @parser = par.new(lex.new StringIO.new "FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE RESTRICT")
-    @parser.parse.should == [:foreign_key,
-                              [:column, 'employee_id'],
-                              [:references, [:table, 'employees', [:column, 'employee_id']]],
-                              [:on, :delete, :restrict]]
+    # FIXME
+    @parser.parse.should == 'belongs_to :employee; validates :employee, presence: true'
   end
 end
