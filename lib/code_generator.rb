@@ -4,16 +4,12 @@ class Node
     @children = args
   end
 
-  def text_expr
-    raise "text_expr is not implemented: #{self}"
-  end
-
   def gen
     raise "gen is not implemented: #{self}"
   end
 
   def column
-    raise "column is not implemented: #{self}"
+    'base'
   end
 end
 
@@ -29,7 +25,13 @@ class IdentNode < Node
   def initialize val; super(val, nil); end
 
   def gen
-    @value.gen
+    # bottoms out: IDENT is a string
+    @value
+  end
+
+  def column
+    # ident is likely a column (must be?)
+    @value
   end
 end
 
@@ -37,25 +39,21 @@ class ExprNode < Node
   def initialize val; super(val); end
 
   def column
-    @value && @value.column
-  end
-
-  def text_expr
-    @value.text_expr
+    @value.column
   end
 
   def gen
-    if @value.nil?
-      "true"
-    else
-      @value.gen
-    end
+    @value.gen
   end
 end
 
 class EmptyExprNode < Node
   def gen
-    'true'
+    nil
+  end
+
+  def column
+    nil
   end
 end
 
@@ -63,11 +61,10 @@ class CheckNode < Node
   def initialize val; super(val); end
 
   def gen
-    column = @value.column || 'base'
-    text_expr = @value.text_expr
+    column = @value.column
     val = @value.gen
     if val
-      "validate { errors.add(:#{column}, \"Expected #{text_expr}\") unless #{@value.gen} }"
+      "validate { errors.add(:#{column}, \"Expected TODO\") unless #{val} }"
     else
       "validate { true }"
     end
@@ -78,16 +75,31 @@ class TypedExprNode < Node
   def initialize val, *args
     @children = args
     @type = @children[0]
+    #raise "value: #{val.gen}, type: #{@children[0]}"
     @value = case @type.gen
-             when 'text' then TextExprNode.new(val)
+             when 'text' then TextNode.new(val)
              when 'date' then DateExprNode.new(val)
              else
                raise "Unknown type: #{@children[0]}"
              end
   end
 
+  def column
+    @value.column
+  end
+
   def gen
     @value.gen
+  end
+end
+
+class TextNode < Node
+  def gen
+    @value.gen
+  end
+
+  def column
+    @value.column
   end
 end
 
@@ -107,19 +119,17 @@ class DateExprNode < Node
   end
 end
 
-class TextExprNode < Node
+class StrLitNode < Node
   def initialize val; super(val); end
 
   def gen
-    @value.gen
-  end
-end
-
-class StrNode < Node
-  def initialize val; super(val); end
-
-  def gen
-    @value.gsub(/^'(.*)'$/, '\1')
+    #FIXME HACK
+    if @value.respond_to? :gen
+      val = @value.gen
+    else
+      val = @value
+    end
+    val.gsub(/^'(.*)'$/, '\1')
   end
 end
 
@@ -161,6 +171,14 @@ class OperatorNode < Node
     when :plus  then 'plus'
     when :match then 'to match'
     end
+  end
+
+  def column
+    c1 = @expr1.column
+    c2 = @expr1.column
+    return c1 if c1 != 'base'
+    return c2 if c2 != 'base'
+    'base'
   end
 
   def gen
@@ -208,7 +226,55 @@ class MatchExpr
   end
 
   def gen
-    puts "#{@e2.class} #{@e2.gen.class}"
+    #raise "RHS: #{@e2.class} #{@e2.gen.class}"
     "#{@e1.gen} =~ /#{convert_wildcard @e2.gen}/"
+  end
+end
+
+class TableNode < Node
+  def initialize tab, col
+    @tab = tab
+    @col = col
+  end
+
+  def table_to_class
+    @tab.gen.capitalize
+  end
+
+  def key_name
+    @col.gen
+  end
+
+  def gen
+    @tab.gen
+  end
+end
+
+class ActionNode < Node
+  def initialize action, consequence
+    @action = action
+    @consequence = consequence
+  end
+
+  def gen
+    "ON #{@action} #{@consequence}"
+  end
+end
+
+class ForeignKeyNode < Node
+  def initialize col, table, *actions
+    @col = col
+    @table = table
+    if actions.count > 0
+      @action = actions[0]
+    end
+  end
+
+  def gen
+    col = @col.gen
+    table_name = @table.gen
+    class_name = @table.table_to_class
+    key = @table.key_name
+    "belongs_to :#{table_name}, foreign_key: '#{col}', class: '#{class_name}', primary_key: '#{key}'"
   end
 end
