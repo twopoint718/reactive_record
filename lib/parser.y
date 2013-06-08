@@ -42,12 +42,12 @@ rule
 
   check_statement : CHECK expr  { result = CheckNode.new(val[1]) }
 
-  expr            :                     { result = EmptyExprNode.new }
-                  | LPAREN expr RPAREN  { result = val[1] }
+  expr            :                     { result = EmptyExprNode.new :empty }
+                  | LPAREN expr RPAREN  { result = ExprNode.new(val[1]) }
                   | expr type_signature { result = TypedExprNode.new(val[0], val[1]) }
                   | expr operator expr  { result = OperatorNode.new(val[1], val[0], val[2]) }
                   | IDENT               { result = IdentNode.new(val[0]) }
-                  | STRLIT              { result = StrNode.new(val[0]) }
+                  | STRLIT              { result = StrLitNode.new(val[0]) }
                   | INT                 { result = IntNode.new(val[0]) }
                   ;
 
@@ -71,7 +71,7 @@ rule
   column_spec     : LPAREN IDENT RPAREN { result = IdentNode.new(val[1]) }
                   ;
 
-  table_spec      : IDENT LPAREN IDENT RPAREN { result = TableNode.new(IdentNode.new(val[0]), IdentNode.new(val[1])) }
+  table_spec      : IDENT column_spec { result = TableNode.new(IdentNode.new(val[0]), val[1]) }
                   ;
 
   action_spec     : ON DELETE RESTRICT { result = ActionNode.new(:delete, :restrict) }
