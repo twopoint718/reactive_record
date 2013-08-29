@@ -14,7 +14,6 @@ describe ConstraintParser::Parser do
 
   it "CHECK (((email)::text ~~ '%@bendyworks.com'::text))" do
     @parser = par.new(lex.new StringIO.new "CHECK (((email)::text ~~ '%@bendyworks.com'::text))")
-    #@parser.parse.gen.should == "validate { errors.add(:email, \"Expected email to match '%@bendyworks.com'\") unless email =~ /.*@bendyworks.com/ }"
     @parser.parse.gen.should  == 'validate { errors.add(:email, "Expected TODO") unless email =~ /.*@bendyworks.com/ }'
   end
 
@@ -35,8 +34,6 @@ describe ConstraintParser::Parser do
 
   it "FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE RESTRICT" do
     @parser = par.new(lex.new StringIO.new "FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE RESTRICT")
-    # FIXME
-    #@parser.parse.gen.should == 'belongs_to :employee; validates :employee, presence: true'
     @parser.parse.gen.should == "belongs_to :employees, foreign_key: 'employee_id', class: 'Employees', primary_key: 'employee_id'"
   end
 end
