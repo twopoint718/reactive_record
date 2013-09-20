@@ -12,7 +12,7 @@ module ReactiveRecord
     res << ''
     res += validate_definition non_nullable_columns(db, table_name), 'presence'
     res += validate_definition unique_columns(db, table_name), 'uniqueness'
-    res << "end"
+    res << "end\n"
 
     res.join "\n"
   end
@@ -49,22 +49,32 @@ module ReactiveRecord
   end
 
   def cols_with_contype db, table_name, type
-    result = db.exec """
-      SELECT column_name
+    db.exec """
+      SELECT column_name, conname
       FROM pg_constraint, information_schema.columns
       WHERE table_name = $1
       AND contype = $2
       AND ordinal_position = any(conkey);
     """, [table_name, type]
-    result.map { |c| c["column_name"] }
+  end
+
+  def column_name
+    lambda {|row| row['column_name']}
   end
 
   def primary_key db, table_name
-    cols_with_contype(db, table_name, 'p').first
+    matching_primary_key = lambda {|row| row['conname'] == "#{table_name}_pkey"}
+    cols_with_contype(db, table_name, 'p')
+      .select(&matching_primary_key)
+      .map(&column_name)
+      .first
   end
 
   def unique_columns db, table_name
-    cols_with_contype db, table_name, 'u'
+    matching_unique_constraint = lambda {|row| row['conname'] == "#{table_name}_#{row['column_name']}_key"}
+    cols_with_contype(db, table_name, 'u')
+      .select(&matching_unique_constraint)
+      .map(&column_name)
   end
 
   def non_nullable_columns db, table_name
