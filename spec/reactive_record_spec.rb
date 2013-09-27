@@ -19,7 +19,6 @@ describe 'ReactiveRecord' do
   after :all do
     # db teardown
     @db.close
-    system "pg_dump --schema-only #{@dbname} > schema_dump.sql"
     system "dropdb #{@dbname}"
   end
 
