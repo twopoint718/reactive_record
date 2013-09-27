@@ -75,7 +75,6 @@ class TypedExprNode < Node
   def initialize val, *args
     @children = args
     @type = @children[0]
-    #raise "value: #{val.gen}, type: #{@children[0]}"
     @value = case @type.gen
              when 'text' then TextNode.new(val)
              when 'date' then DateExprNode.new(val)
