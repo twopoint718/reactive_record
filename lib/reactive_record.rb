@@ -88,5 +88,6 @@ module ReactiveRecord
   end
 
   def constraint_to_validation constraint
+    # todo
   end
 end
