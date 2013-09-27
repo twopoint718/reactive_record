@@ -114,7 +114,7 @@ class DateExprNode < Node
       "Time.now.to_date"
     else
       # YYYY-MM-DD
-      "Date.parse(#{val})"
+      "Date.parse(\"#{val}\")"
     end
   end
 end

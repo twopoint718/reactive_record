@@ -30,9 +30,11 @@ describe 'ReactiveRecord' do
           class Employees < ActiveRecord::Base
             set_table_name 'employees'
             set_primary_key :id
-
             validate :id, :name, :email, :start_date, presence: true
             validate :email, uniqueness: true
+            validate { errors.add(:email, "Expected TODO") unless email =~ /.*@example.com/ }
+            validate { errors.add(:start_date, "Expected TODO") unless start_date >= Date.parse(\"2009-04-13\") }
+            validate { errors.add(:start_date, "Expected TODO") unless start_date <= Time.now.to_date + 365 }
           end
         EOS
     end
@@ -43,11 +45,57 @@ describe 'ReactiveRecord' do
           class Projects < ActiveRecord::Base
             set_table_name 'projects'
             set_primary_key :id
-
             validate :id, :name, presence: true
             validate :name, uniqueness: true
           end
         EOS
+    end
+  end
+
+  context '#constraints' do
+    it 'gathers all constraints on the employees table' do
+      constraints(@db, 'employees').to_a.should == [
+        {"table_name"=>"employees", "constraint_name"=>"company_email", "constraint_src"=>"CHECK (((email)::text ~~ '%@example.com'::text))"},
+        {"table_name"=>"employees", "constraint_name"=>"employees_email_key", "constraint_src"=>"UNIQUE (email)"},
+        {"table_name"=>"employees", "constraint_name"=>"employees_pkey", "constraint_src"=>"PRIMARY KEY (id)"},
+        {"table_name"=>"employees", "constraint_name"=>"founding_date", "constraint_src"=>"CHECK ((start_date >= '2009-04-13'::date))"},
+        {"table_name"=>"employees", "constraint_name"=>"future_start_date", "constraint_src"=>"CHECK ((start_date <= (('now'::text)::date + 365)))"}
+      ]
+    end
+    it 'gathers all constraints on the projects table' do
+      constraints(@db, 'projects').to_a.should == [
+        {"table_name"=>"projects", "constraint_name"=>"projects_name_key", "constraint_src"=>"UNIQUE (name)"},
+        {"table_name"=>"projects", "constraint_name"=>"projects_pkey", "constraint_src"=>"PRIMARY KEY (id)"}
+      ]
+    end
+    it 'gathers all constraints on the employees_projects table' do
+      constraints(@db, 'employees_projects').to_a.should == [
+        {
+          "table_name"=>"employees_projects",
+          "constraint_name"=>"employees_projects_employee_id_fkey",
+          "constraint_src"=>"FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE RESTRICT"
+        },
+        {
+          "table_name"=>"employees_projects",
+          "constraint_name"=>"employees_projects_pkey",
+          "constraint_src"=>"PRIMARY KEY (employee_id, project_id)"
+        },
+        {
+          "table_name"=>"employees_projects",
+          "constraint_name"=>"employees_projects_project_id_fkey",
+          "constraint_src"=>"FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE"
+        }
+      ]
+    end
+  end
+
+  context '#generate_constraints' do
+    it 'generates ruby code for employees constraints' do
+      generate_constraints(@db, 'employees').should == [
+        "validate { errors.add(:email, \"Expected TODO\") unless email =~ /.*@example.com/ }",
+        "validate { errors.add(:start_date, \"Expected TODO\") unless start_date >= Date.parse(\"2009-04-13\") }",
+        "validate { errors.add(:start_date, \"Expected TODO\") unless start_date <= Time.now.to_date + 365 }",
+      ]
     end
   end
 

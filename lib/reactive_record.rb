@@ -2,26 +2,32 @@ require_relative "./reactive_record/version"
 
 require 'pg'
 require 'active_support/inflector'
+require 'parser'
 
 module ReactiveRecord
   def model_definition db, table_name
-    res = []
-    res << "class #{table_name.classify.pluralize} < ActiveRecord::Base"
-    res << "  set_table_name '#{table_name}'"
-    res << "  set_primary_key :#{primary_key db, table_name}"
-    res << ''
-    res += validate_definition non_nullable_columns(db, table_name), 'presence'
-    res += validate_definition unique_columns(db, table_name), 'uniqueness'
-    res << "end\n"
+    header = "class #{table_name.classify.pluralize} < ActiveRecord::Base\n"
+    footer = "end\n"
 
-    res.join "\n"
+    body = []
+    body << "set_table_name '#{table_name}'"
+    body << "set_primary_key :#{primary_key db, table_name}"
+    body << "#{validate_definition non_nullable_columns(db, table_name), 'presence'}"
+    body << "#{validate_definition unique_columns(db, table_name), 'uniqueness'}"
+
+    generate_constraints(db, table_name).each do |con|
+      body << con
+    end
+
+    indent = "  "
+    body = indent + body.join("\n" + indent) + "\n"
+    header + body + footer
   end
 
   def validate_definition cols, type
-    res = []
-    return res if cols.empty?
+    return '' if cols.empty?
     symbols = cols.map { |c| ":#{c}" }
-    ["  validate #{symbols.join ', '}, #{type}: true"]
+    "validate #{symbols.join ', '}, #{type}: true"
   end
 
   def table_names db
@@ -32,20 +38,36 @@ module ReactiveRecord
     results.map { |r| r['table_name'] }
   end
 
-  def constraints db
-    result = db.exec """
-      SELECT n.nspname || '.' || c.relname AS table_name,
+  def constraints db, table
+    db.exec("""
+      SELECT c.relname AS table_name,
              con.conname AS constraint_name,
              pg_get_constraintdef( con.oid, false) AS constraint_src
       FROM pg_constraint con
         JOIN pg_namespace n on (n.oid = con.connamespace)
         JOIN pg_class c on (c.oid = con.conrelid)
-      WHERE con.conrelid != 0;
-    """
-    result
-      .map{|c| [c['table_name'], c['constraint_name'], c['constraint_src']]}
-      .sort
-      .group_by{|item| item[0]} # table name
+      WHERE con.conrelid != 0
+      AND c.relname = $1
+      ORDER BY con.conname;
+    """, [table])
+  end
+
+  def generate_constraints db, table
+    key_or_pkey = lambda do |row|
+      row['constraint_name'].end_with?('_key') || row['constraint_name'].end_with?('_pkey')
+    end
+
+    constraints(db, table)
+      .reject(&key_or_pkey)
+      .map(&parse_constraint)
+  end
+
+  def parse_constraint
+    lambda do |row|
+      src = row['constraint_src']
+      parser = ConstraintParser::Parser.new(ConstraintParser::Lexer.new(StringIO.new src))
+      parser.parse.gen
+    end
   end
 
   def cols_with_contype db, table_name, type
@@ -60,6 +82,10 @@ module ReactiveRecord
 
   def column_name
     lambda {|row| row['column_name']}
+  end
+
+  def table_name
+    lambda {|row| row['table_name']}
   end
 
   def primary_key db, table_name
@@ -85,9 +111,5 @@ module ReactiveRecord
       AND is_nullable = $2
     """, [table_name, 'NO']
     result.map { |r| r['column_name'] }
-  end
-
-  def constraint_to_validation constraint
-    # todo
   end
 end
