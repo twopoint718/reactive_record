@@ -6,12 +6,15 @@ module ReactiveRecord
       include ReactiveRecord
 
       desc "Adds models based upon your existing Postgres DB"
-      argument :database_name, :type => :string
 
       def create_models
-        db = PG.connect dbname: database_name
+        db_env = Rails.configuration.database_configuration[Rails.env]
+        raise 'You must use the pg database adapter' unless db_env['adapter'] == 'postgresql'
+        db = PG.connect dbname: db_env['database']
         table_names(db).each do |table|
-          create_file "app/models/#{table.underscore.pluralize}.rb", model_definition(db, table)
+          unless table == 'schema_migrations'
+            create_file "app/models/#{table.underscore.pluralize}.rb", model_definition(db, table)
+          end
         end
       end
     end
