@@ -11,6 +11,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q{Generate ActiveRecord models from a pre-existing Postgres db}
   gem.summary       = %q{Use the schema you always wanted.}
   gem.homepage      = "https://github.com/twopoint718/reactive_record"
+  gem.licenses      = ['MIT']
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
