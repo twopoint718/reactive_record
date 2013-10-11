@@ -105,7 +105,7 @@ end
 **Lastly** Deploy the `reactive_record` generator:
 
 ``` shell
-$ rails generate reactive_record
+$ rails generate reactive_record:install
 ```
 
 Go look at the generated file:
@@ -124,3 +124,10 @@ Reactive record does not currently attempt to generate any kind of
 reasonable error message (I'm working on it) :)
 
 **Enjoy**
+
+## Credits
+
+Thanks to Joe Nelson, @begriffs, for contributions and inspiration. Thanks to
+[Bendyworks](http://bendyworks.com/) for the 20% time to work on this project!
+
+![Footer](img/bendyworks_github_footer.png)
