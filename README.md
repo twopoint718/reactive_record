@@ -127,7 +127,11 @@ reasonable error message (I'm working on it) :)
 
 ## Credits
 
-Thanks to Joe Nelson, @begriffs, for contributions and inspiration. Thanks to
-[Bendyworks](http://bendyworks.com/) for the 20% time to work on this project!
+Firstly, thank you, [contributors](reactive_record/graphs/contributors)!
+
+Also a special thanks to Joe Nelson,
+[@begriffs](https://github.com/begriffs), for contributions and
+inspiration. Thanks to [Bendyworks](http://bendyworks.com/) for the 20%
+time to work on this project!
 
 ![Footer](img/bendyworks_github_footer.png)
