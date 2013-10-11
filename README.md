@@ -127,7 +127,8 @@ reasonable error message (I'm working on it) :)
 
 ## Credits
 
-Firstly, thank you, [contributors](reactive_record/graphs/contributors)!
+Firstly, thank you,
+[contributors](https://github.com/twopoint718/reactive_record/graphs/contributors)!
 
 Also a special thanks to Joe Nelson,
 [@begriffs](https://github.com/begriffs), for contributions and
