@@ -1,6 +1,6 @@
 # reactive_record
 
-![Reactive Record logo](https://raw.github.com/twopoint718/reactive_record/master/doc/reactive_record.png)
+![Reactive Record logo](https://raw.github.com/twopoint718/reactive_record/master/img/reactive_record.png)
 
 Generates ActiveRecord models to fit a pre-existing Postgres database.
 Now you can use Rails with the db schema you always wanted. It's
