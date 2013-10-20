@@ -3,6 +3,8 @@
       alt="Reactive record logo">
 </p>
 
+[![Gem Version](https://badge.fury.io/rb/reactive_record.png)](http://badge.fury.io/rb/reactive_record)
+
 Generates ActiveRecord models to fit a pre-existing Postgres database.
 Now you can use Rails with the db schema you always wanted. It's
 **your** convention over configuration.
