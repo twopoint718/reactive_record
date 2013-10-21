@@ -156,6 +156,8 @@ class OperatorNode < Node
       MathExpr.new @value, @expr1, @expr2
     when :match
       MatchExpr.new @expr1, @expr2
+    when :and
+      AndExpr.new @expr1, @expr2
     end
   end
 
@@ -200,6 +202,16 @@ class ComparisonExpr
 
   def gen
     "#{@e1.gen} #{@comparison} #{@e2.gen}"
+  end
+end
+
+class AndExpr
+  def initialize  e1, e2
+    @e1, @e2 = e1, e2
+  end
+
+  def gen
+    "#{@e1.gen} && #{@e2.gen}"
   end
 end
 

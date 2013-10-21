@@ -2,6 +2,7 @@ require 'strscan'
 
 module ConstraintParser
   class Lexer
+    AND         = /AND/
     CASCADE     = /CASCADE/
     CHECK       = /CHECK/
     COMMA       = /,/
@@ -50,6 +51,7 @@ module ConstraintParser
           when text = @ss.scan(EQ)          then [:EQ, text]
           when text = @ss.scan(PLUS)        then [:PLUS, text]
           when text = @ss.scan(MATCH_OP)    then [:MATCH_OP, text]
+          when text = @ss.scan(AND)         then [:AND, text]
 
           # SQL Keywords
           when text = @ss.scan(CHECK)       then [:CHECK, text]

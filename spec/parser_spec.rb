@@ -32,6 +32,11 @@ describe ConstraintParser::Parser do
     @parser.parse.gen.should == 'validate { errors.add(:start_date, "Expected TODO") unless start_date <= Time.now.to_date + 365 }'
   end
 
+  it "CHECK (((port >= 1024) AND (port <= 65634)))" do
+    @parser = par.new(lex.new StringIO.new "CHECK (((port >= 1024) AND (port <= 65634)))")
+    @parser.parse.gen.should == 'validate { errors.add(:port, "Expected TODO") unless port >= 1024 && port <= 65634 }'
+  end
+
   it "FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE RESTRICT" do
     @parser = par.new(lex.new StringIO.new "FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE RESTRICT")
     @parser.parse.gen.should == "belongs_to :employees, foreign_key: 'employee_id', class: 'Employees', primary_key: 'employee_id'"

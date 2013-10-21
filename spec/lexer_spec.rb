@@ -142,4 +142,26 @@ describe ConstraintParser::Lexer do
       [:RPAREN, ')'],
     ]
   end
+ it "CHECK (((port >= 1024) AND (port <= 65634)))" do
+    @lex = lex.new StringIO.new "CHECK (((port >= 1024) AND (port <= 65634)))"
+    @lex.tokenize.should == [
+      [:CHECK, 'CHECK'],
+      [:LPAREN, '('],
+      [:LPAREN, '('],
+      [:LPAREN, '('],
+      [:IDENT, 'port'],
+      [:GTEQ, '>='],
+      [:INT, "1024"],
+      [:RPAREN, ')'],
+      [:AND, 'AND'],
+      [:LPAREN, '('],
+      [:IDENT, 'port'],
+      [:LTEQ, '<='],
+      [:INT, "65634"],
+      [:RPAREN, ')'],
+      [:RPAREN, ')'],
+      [:RPAREN, ')'],
+    ]
+  end
+
 end
