@@ -13,7 +13,7 @@ Gem::Specification.new do |gem|
   gem.homepage      = "https://github.com/twopoint718/reactive_record"
   gem.licenses      = ['MIT']
 
-  gem.files         = [`git ls-files`.split($/), "lib/parser.rb"]
+  gem.files         = `git ls-files`.split("\n")
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
