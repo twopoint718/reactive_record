@@ -4,7 +4,8 @@ prechigh
   left GTEQ LTEQ NEQ EQ GT LT
 preclow
 
-token CASCADE
+token AND
+      CASCADE
       CHECK
       COMMA
       DELETE
@@ -59,6 +60,7 @@ rule
                   | LT       { result = :lt    }
                   | PLUS     { result = :plus  }
                   | MATCH_OP { result = :match }
+                  | AND      { result = :and }
                   ;
 
   type_signature  : TYPE IDENT { result = IdentNode.new(val[1]) }
