@@ -27,50 +27,52 @@ module ConstraintParser
 ##### State transition tables begin ###
 
 racc_action_table = [
-    27,    28,    21,    22,    23,    24,    25,    26,    27,    28,
-    21,    22,    23,    24,    25,    26,    27,    28,    21,    22,
-    23,    24,    25,    26,    29,     6,    45,    35,     7,    12,
-    14,    11,    29,    12,    14,    11,    31,    36,    44,    13,
-    29,     5,    32,    13,    12,    14,    11,    16,    18,    17,
-     9,    38,    39,     8,    13,    41,    16,    43,    33 ]
+    27,    28,    21,    22,    23,    24,    25,    26,    29,    27,
+    28,    21,    22,    23,    24,    25,    26,    29,    46,    12,
+    14,    11,    12,    14,    11,    30,    36,    32,     6,    13,
+    45,     7,    13,    33,    30,    27,    28,    21,    22,    23,
+    24,    25,    26,    29,     5,    12,    14,    11,    16,    18,
+    17,     9,    39,    40,     8,    13,    42,    37,    16,    44,
+    30,    34 ]
 
 racc_action_check = [
-    10,    10,    10,    10,    10,    10,    10,    10,    34,    34,
-    34,    34,    34,    34,    34,    34,    30,    30,    30,    30,
-    30,    30,    30,    30,    10,     0,    43,    29,     0,    11,
-    11,    11,    34,    20,    20,    20,    15,    30,    43,    11,
-    30,     0,    16,    20,     6,     6,     6,     7,     9,     8,
-     5,    31,    32,     1,     6,    37,    38,    41,    18 ]
+    10,    10,    10,    10,    10,    10,    10,    10,    10,    35,
+    35,    35,    35,    35,    35,    35,    35,    35,    44,    11,
+    11,    11,    20,    20,    20,    10,    30,    15,     0,    11,
+    44,     0,    20,    16,    35,    31,    31,    31,    31,    31,
+    31,    31,    31,    31,     0,     6,     6,     6,     7,     9,
+     8,     5,    32,    33,     1,     6,    38,    31,    39,    42,
+    31,    18 ]
 
 racc_action_pointer = [
-    14,    53,   nil,   nil,   nil,    33,    29,    30,    49,    33,
-    -2,    14,   nil,   nil,   nil,    15,    27,   nil,    35,   nil,
-    18,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,    12,
-    14,    36,    29,   nil,     6,   nil,   nil,    36,    39,   nil,
-   nil,    44,   nil,    16,   nil,   nil ]
+    16,    54,   nil,   nil,   nil,    33,    29,    30,    50,    33,
+    -2,     3,   nil,   nil,   nil,     5,    17,   nil,    37,   nil,
+     6,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
+    10,    33,    36,    29,   nil,     7,   nil,   nil,    36,    40,
+   nil,   nil,    45,   nil,     7,   nil,   nil ]
 
 racc_action_default = [
-   -28,   -28,    -1,    -2,    -3,   -28,    -6,   -28,   -28,   -28,
-    -5,    -6,   -10,   -11,   -12,   -28,   -28,    46,   -28,    -8,
-    -6,   -13,   -14,   -15,   -16,   -17,   -18,   -19,   -20,   -28,
-   -28,   -28,   -28,    -4,    -9,   -21,    -7,   -22,   -28,   -24,
-   -23,   -28,   -25,   -28,   -26,   -27 ]
+   -29,   -29,    -1,    -2,    -3,   -29,    -6,   -29,   -29,   -29,
+    -5,    -6,   -10,   -11,   -12,   -29,   -29,    47,   -29,    -8,
+    -6,   -13,   -14,   -15,   -16,   -17,   -18,   -19,   -20,   -21,
+   -29,   -29,   -29,   -29,    -4,    -9,   -22,    -7,   -23,   -29,
+   -25,   -24,   -29,   -26,   -29,   -27,   -28 ]
 
 racc_goto_table = [
-    15,    10,     1,     4,     3,     2,    30,    37,    40,   nil,
-   nil,   nil,   nil,   nil,   nil,    34,   nil,   nil,   nil,   nil,
+    15,    10,     1,     4,     3,     2,    31,    38,    41,   nil,
+   nil,   nil,   nil,   nil,   nil,    35,   nil,   nil,   nil,   nil,
    nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
-   nil,    42 ]
+   nil,   nil,    43 ]
 
 racc_goto_check = [
      8,     5,     1,     4,     3,     2,     5,     9,    10,   nil,
    nil,   nil,   nil,   nil,   nil,     5,   nil,   nil,   nil,   nil,
    nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
-   nil,     8 ]
+   nil,   nil,     8 ]
 
 racc_goto_pointer = [
-   nil,     2,     5,     4,     3,    -5,   nil,   nil,    -7,   -24,
-   -29 ]
+   nil,     2,     5,     4,     3,    -5,   nil,   nil,    -7,   -25,
+   -30 ]
 
 racc_goto_default = [
    nil,   nil,   nil,   nil,   nil,   nil,    19,    20,   nil,   nil,
@@ -78,37 +80,38 @@ racc_goto_default = [
 
 racc_reduce_table = [
   0, 0, :racc_error,
-  1, 29, :_reduce_1,
-  1, 29, :_reduce_2,
-  1, 29, :_reduce_3,
-  4, 30, :_reduce_4,
-  2, 31, :_reduce_5,
-  0, 33, :_reduce_6,
-  3, 33, :_reduce_7,
-  2, 33, :_reduce_8,
-  3, 33, :_reduce_9,
-  1, 33, :_reduce_10,
-  1, 33, :_reduce_11,
-  1, 33, :_reduce_12,
-  1, 35, :_reduce_13,
-  1, 35, :_reduce_14,
-  1, 35, :_reduce_15,
-  1, 35, :_reduce_16,
-  1, 35, :_reduce_17,
-  1, 35, :_reduce_18,
-  1, 35, :_reduce_19,
-  1, 35, :_reduce_20,
-  2, 34, :_reduce_21,
-  4, 32, :_reduce_22,
-  5, 32, :_reduce_23,
-  3, 36, :_reduce_24,
-  2, 37, :_reduce_25,
-  3, 38, :_reduce_26,
-  3, 38, :_reduce_27 ]
+  1, 30, :_reduce_1,
+  1, 30, :_reduce_2,
+  1, 30, :_reduce_3,
+  4, 31, :_reduce_4,
+  2, 32, :_reduce_5,
+  0, 34, :_reduce_6,
+  3, 34, :_reduce_7,
+  2, 34, :_reduce_8,
+  3, 34, :_reduce_9,
+  1, 34, :_reduce_10,
+  1, 34, :_reduce_11,
+  1, 34, :_reduce_12,
+  1, 36, :_reduce_13,
+  1, 36, :_reduce_14,
+  1, 36, :_reduce_15,
+  1, 36, :_reduce_16,
+  1, 36, :_reduce_17,
+  1, 36, :_reduce_18,
+  1, 36, :_reduce_19,
+  1, 36, :_reduce_20,
+  1, 36, :_reduce_21,
+  2, 35, :_reduce_22,
+  4, 33, :_reduce_23,
+  5, 33, :_reduce_24,
+  3, 37, :_reduce_25,
+  2, 38, :_reduce_26,
+  3, 39, :_reduce_27,
+  3, 39, :_reduce_28 ]
 
-racc_reduce_n = 28
+racc_reduce_n = 29
 
-racc_shift_n = 46
+racc_shift_n = 47
 
 racc_token_table = {
   false => 0,
@@ -121,26 +124,27 @@ racc_token_table = {
   :EQ => 7,
   :GT => 8,
   :LT => 9,
-  :CASCADE => 10,
-  :CHECK => 11,
-  :COMMA => 12,
-  :DELETE => 13,
-  :FOREIGN_KEY => 14,
-  :IDENT => 15,
-  :INT => 16,
-  :LPAREN => 17,
-  :NEWLINE => 18,
-  :ON => 19,
-  :PRIMARY_KEY => 20,
-  :REFERENCES => 21,
-  :RESTRICT => 22,
-  :RPAREN => 23,
-  :SPACE => 24,
-  :STRLIT => 25,
-  :TYPE => 26,
-  :UNIQUE => 27 }
+  :AND => 10,
+  :CASCADE => 11,
+  :CHECK => 12,
+  :COMMA => 13,
+  :DELETE => 14,
+  :FOREIGN_KEY => 15,
+  :IDENT => 16,
+  :INT => 17,
+  :LPAREN => 18,
+  :NEWLINE => 19,
+  :ON => 20,
+  :PRIMARY_KEY => 21,
+  :REFERENCES => 22,
+  :RESTRICT => 23,
+  :RPAREN => 24,
+  :SPACE => 25,
+  :STRLIT => 26,
+  :TYPE => 27,
+  :UNIQUE => 28 }
 
-racc_nt_base = 28
+racc_nt_base = 29
 
 racc_use_result_var = true
 
@@ -171,6 +175,7 @@ Racc_token_to_s_table = [
   "EQ",
   "GT",
   "LT",
+  "AND",
   "CASCADE",
   "CHECK",
   "COMMA",
@@ -308,36 +313,41 @@ def _reduce_20(val, _values, result)
 end
 
 def _reduce_21(val, _values, result)
- result = IdentNode.new(val[1]) 
+ result = :and 
     result
 end
 
 def _reduce_22(val, _values, result)
- result = ForeignKeyNode.new(val[1], val[3]) 
-    result
-end
-
-def _reduce_23(val, _values, result)
- result = ForeignKeyNode.new(val[1], val[3], val[4]) 
-    result
-end
-
-def _reduce_24(val, _values, result)
  result = IdentNode.new(val[1]) 
     result
 end
 
+def _reduce_23(val, _values, result)
+ result = ForeignKeyNode.new(val[1], val[3]) 
+    result
+end
+
+def _reduce_24(val, _values, result)
+ result = ForeignKeyNode.new(val[1], val[3], val[4]) 
+    result
+end
+
 def _reduce_25(val, _values, result)
- result = TableNode.new(IdentNode.new(val[0]), val[1]) 
+ result = IdentNode.new(val[1]) 
     result
 end
 
 def _reduce_26(val, _values, result)
- result = ActionNode.new(:delete, :restrict) 
+ result = TableNode.new(IdentNode.new(val[0]), val[1]) 
     result
 end
 
 def _reduce_27(val, _values, result)
+ result = ActionNode.new(:delete, :restrict) 
+    result
+end
+
+def _reduce_28(val, _values, result)
  result = ActionNode.new(:delete, :cascade) 
     result
 end
