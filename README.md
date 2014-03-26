@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/twopoint718/reactive_record.png?label=ready&title=Ready)](https://waffle.io/twopoint718/reactive_record)
 <p align="center">
   <img src="https://raw.github.com/twopoint718/reactive_record/master/img/reactive_record.png"
       alt="Reactive record logo">
