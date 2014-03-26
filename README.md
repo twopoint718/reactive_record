@@ -7,6 +7,7 @@
   </i>
 </p>
 
+[![Stories in Ready](https://badge.waffle.io/twopoint718/reactive_record.png?label=ready&title=Ready)](https://waffle.io/twopoint718/reactive_record)
 [![Gem Version](https://badge.fury.io/rb/reactive_record.png)](http://badge.fury.io/rb/reactive_record)
 
 Generates ActiveRecord models to fit a pre-existing Postgres database.
