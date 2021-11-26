@@ -2,8 +2,9 @@
   <img src="https://raw.github.com/twopoint718/reactive_record/master/img/reactive_record.png"
       alt="Reactive record logo">
   <br>
-  <i>Logo design: <a href="http://bendyworks.com/team#kelly">Kelly Rauwerdink</a>,
-    <a href="https://twitter.com/missingdink">@missingdink</a>.
+  <i>Logo design: <a href="https://www.linkedin.com/in/kelly-rauwerdink-80615041">Kelly Rauwerdink</a>,
+    <a href="https://twitter.com/missingdink">@missingdink</a>,
+    <a href="https://missingdink.dribbble.com">Dribbble</a>.
   </i>
 </p>
 
@@ -142,6 +143,6 @@ Also a special thanks to Joe Nelson,
 inspiration; Reactive Record would not exist without his efforts. Thanks to [Bendyworks](http://bendyworks.com/) for the 20%
 time to work on this project!
 
-And, of *course*, a huge thank you to <a href="http://bendyworks.com/team#kelly">Kelly Rauwerdink</a> for her amazing ability to make "an art" even when all I can do is sorta half-articulate what I'm talking about. Thanks!
+And, of *course*, a huge thank you to <a href="https://www.linkedin.com/in/kelly-rauwerdink-80615041">Kelly Rauwerdink</a> for her amazing ability to make "an art" even when all I can do is sorta half-articulate what I'm talking about. Thanks!
 
 ![Footer](img/bendyworks_github_footer.png)
